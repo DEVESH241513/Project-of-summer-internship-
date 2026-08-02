@@ -1,0 +1,51 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+
+// Function to convert a string to lowercase for easier matching
+std::string toLower(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
+}
+
+int main() {
+    std::string userInput;
+
+    std::cout << "=========================================\n";
+    std::cout << "Welcome to TechSupport Bot! (Type 'exit' to quit)\n";
+    std::cout << "=========================================\n";
+    std::cout << "Bot: Hello! How can I help you with your purchase today?\n";
+
+    while (true) {
+        std::cout << "\nYou: ";
+        std::getline(std::cin, userInput);
+        
+        // Clean the input
+        std::string cleanInput = toLower(userInput);
+
+        // Exit condition
+        if (cleanInput == "exit" || cleanInput == "quit") {
+            std::cout << "Bot: Thank you for visiting! Have a great day!\n";
+            break;
+        }
+
+        // Rule-based routing
+        if (cleanInput.find("price") != std::string::npos || cleanInput.find("cost") != std::string::npos) {
+            std::cout << "Bot: Our laptops start at $499 and smartphones start at $299. Do you want pricing on a specific model?";
+        } 
+        else if (cleanInput.find("shipping") != std::string::npos || cleanInput.find("delivery") != std::string::npos) {
+            std::cout << "Bot: Standard shipping takes 3-5 business days. Orders over $50 ship free!";
+        } 
+        else if (cleanInput.find("return") != std::string::npos || cleanInput.find("refund") != std::string::npos) {
+            std::cout << "Bot: We offer a 30-day money-back guarantee. Just keep your receipt and original packaging.";
+        } 
+        else if (cleanInput.find("hello") != std::string::npos || cleanInput.find("hi") != std::string::npos) {
+            std::cout << "Bot: Hi there! How can I assist you today?";
+        } 
+        else {
+            std::cout << "Bot: I'm sorry, I didn't quite understand that. Could you try asking about 'pricing', 'shipping', or 'returns'?";
+        }
+    }
+
+    return 0;
+}

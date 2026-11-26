@@ -1,91 +1,50 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
+# Spam email filter using keyword scoring
 
-std::string toLower(std::string str) {
-    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-    return str;
-}
+# List of high-trigger spam keywords
+SPAM_KEYWORDS = [
+    "free", "winner", "lottery", "urgent", "cash",
+    "click here", "subscribe", "credit card", "risk-free",
+]
 
-int main() {
-    // List of high-trigger spam keywords
-    std::vector<std::string> spamKeywords = {
-        "free", "winner", "lottery", "urgent", "cash", 
-        "click here", "subscribe", "credit card", "risk-free"
-    };
 
-    std::string emailContent;
-    std::cout << "=========================================\n";
-    std::cout << "        Spam Email Filter Tool           \n";
-    std::cout << "=========================================\n";
-    std::cout << "Paste or type your email text below:\n> ";
-    std::getline(std::cin, emailContent);
+def main():
+    print("=========================================")
+    print("        Spam Email Filter Tool")
+    print("=========================================")
 
-    std::string cleanEmail = toLower(emailContent);
-    int spamScore = 0;
-    std::vector<std::string> foundKeywords;
+    email_content = input("Paste or type your email text below:\n> ")
 
-    // Check how many spam keywords are in the text
-    for (const std::string& keyword : spamKeywords) {
-        size_t pos = cleanEmail.find(keyword);
-        while (pos != std::string::npos) {
-            spamScore++;
-            // Save keyword to show the user later (only add once per keyword type for clarity)
-            if (std::find(foundKeywords.begin(), foundKeywords.end(), keyword) == foundKeywords.end()) {
-                foundKeywords.push_back(keyword);
-            }
-            // Move past the current match to check if it appears again
-            pos = cleanEmail.find(keyword, pos + keyword.length());
-        }
-    }
+    clean_email = email_content.lower()
+    spam_score = 0
+    found_keywords = []
 
-    // Output analysis results
-    std::cout << "\n--- Analysis Results ---\n";
-    std::cout << "Spam Trigger Score: " << spamScore << "\n";
+    # Check how many spam keywords are in the text
+    for keyword in SPAM_KEYWORDS:
+        pos = clean_email.find(keyword)
 
-    // Set a threshold (e.g., if 2 or more spam words are found, flag it)
-    if (spamScore >= 2) {
-        std::cout << "Status: [SPAM DETECTED]\n";
-        std::cout << "Triggers found: ";
-        for (const std::string& word : foundKeywords) {
-            std::cout << "'" << word << "' ";
-        }
-        std::cout << "\nAction: Sent to the Junk folder.\n";
-    } else {
-        std::cout << "Status: [HAM / CLEAN EMAIL]\n";
-        std::cout << "Action: Delivered safely to the Inbox.\n";
-    }
+        while pos != -1:
+            spam_score += 1
 
-    return 0;
-}
-#include <iostream>
-#include <string>
+            # Save keyword to show the user later (once per keyword type)
+            if keyword not in found_keywords:
+                found_keywords.append(keyword)
 
-int main() {
-    std::string email;
-    int spamScore = 0;
+            # Move past the current match to check if it appears again
+            pos = clean_email.find(keyword, pos + len(keyword))
 
-    std::cout << "--- Spam Filter Tool ---\n";
-    std::cout << "Enter the email text to scan:\n> ";
-    std::getline(std::cin, email);
+    # Output analysis results
+    print("\n--- Analysis Results ---")
+    print("Spam Trigger Score:", spam_score)
 
-    // Check for common spam keywords
-    if (email.find("free") != std::string::npos) spamScore++;
-    if (email.find("winner") != std::string::npos) spamScore++;
-    if (email.find("lottery") != std::string::npos) spamScore++;
-    if (email.find("cash") != std::string::npos) spamScore++;
-    if (email.find("urgent") != std::string::npos) spamScore++;
+    # Threshold: if 2 or more spam words are found, flag it
+    if spam_score >= 2:
+        print("Status: [SPAM DETECTED]")
+        print("Triggers found:", "".join(f"'{w}'" for w in found_keywords))
+        print("Action: Sent to the Junk folder.")
+    else:
+        print("Status: [HAM/CLEAN EMAIL]")
+        print("Action: Delivered safely to the Inbox.")
 
-    std::cout << "\nScanning completed...\n";
-    std::cout << "Spam keywords found: " << spamScore << "\n";
 
-    // Threshold rule
-    if (spamScore >= 2) {
-        std::cout << "Result: [SPAM DETECTED] -> Sent to Junk folder.\n";
-    } else {
-        std::cout << "Result: [CLEAN EMAIL] -> Sent to Inbox.\n";
-    }
-
-    return 0;
-}
+if __name__ == "__main__":
+    main()
